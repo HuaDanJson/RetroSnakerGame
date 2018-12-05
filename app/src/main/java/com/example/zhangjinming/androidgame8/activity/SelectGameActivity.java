@@ -1,5 +1,6 @@
 package com.example.zhangjinming.androidgame8.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -25,16 +26,22 @@ public class SelectGameActivity extends BaseActivity {
 
     @OnClick(R.id.btn_easy_select_game_activity)
     public void selectEasyGame() {
-        toActivity(EasyPlayGameActivity.class);
+        toPlayGameActivity(1);
     }
 
     @OnClick(R.id.btn_middle_select_game_activity)
     public void selectMiddleGame() {
-        toActivity(MiddlePlayGameActivity.class);
+        toPlayGameActivity(2);
     }
 
     @OnClick(R.id.btn_hard_select_game_activity)
     public void selectHardGame() {
-        toActivity(HardPlayGameActivity.class);
+        toPlayGameActivity(3);
+    }
+
+    public void toPlayGameActivity(int type) {
+        Intent intent = new Intent(SelectGameActivity.this, PlayGameActivity.class);
+        intent.putExtra("TYPE", type);
+        startActivity(intent);
     }
 }

@@ -6,19 +6,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.EasyPlayGameActivity">
+    tools:context=".activity.PlayGameActivity">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#00bb00"
-        android:gravity="center"
-        android:text="简单模式"
-        android:textColor="@color/colorAccent"
-        android:textSize="26sp"
-        android:textStyle="bold"/>
+        android:orientation="horizontal">
 
-    <com.example.zhangjinming.androidgame8.activity.EastGameView
+        <TextView
+            android:id="@+id/tv_type_play_game_activity"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="简单模式"
+            android:textColor="@color/colorAccent"
+            android:textSize="26sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tv_score_easy_game_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical"
+            android:text="得分：0"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+
+    <com.example.zhangjinming.androidgame8.activity.GameView
         android:id="@+id/rl_easy_game_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

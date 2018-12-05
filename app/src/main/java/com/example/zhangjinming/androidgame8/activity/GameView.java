@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Build;
+import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -17,20 +18,44 @@ import com.example.zhangjinming.androidgame8.bean.Food;
 
 import java.util.ArrayList;
 
-public class HardGameView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
-    private final SurfaceHolder holder;
-    private final GestureDetector gestureDetector;
-    private final float scaleX;
-    private final float scaleY;
-    private Food food;
-    private Paint paint;
+public class GameView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
+
+    private static SurfaceHolder holder;
+    private static GestureDetector gestureDetector;
+    private float scaleX;
+    private float scaleY;
+    private static Food food;
+    private static Paint paint;
     private boolean isRun;
     private ArrayList<Block> blocks;
     private boolean gameOver;
     private Block head;
+    private EasyGameViewListener mListener;
+    private int EASY_TYPE = 20000;
+    private int MIDDLE_TYPE = 10000;
+    private int HARD_TYPE = 5000;
+    private int CURRENT_TYPE = EASY_TYPE;
 
-    public HardGameView(Context context) {
+    public void setEasyGameViewListener(EasyGameViewListener listener) {
+        this.mListener = listener;
+    }
+
+    public GameView(Context context, SurfaceHolder holder) {
         super(context);
+        init(context);
+    }
+
+    public GameView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public GameView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    public void init(Context context) {
         holder = getHolder();
         holder.addCallback(this);
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -95,8 +120,8 @@ public class HardGameView extends SurfaceView implements SurfaceHolder.Callback,
     private void init() {
         gameOver = false;
         blocks.clear();
+        //控制初始蛇长度
         for (int i = 0; i < 10; i++) {
-//          for (int i = 0; i < 10; i++){
             blocks.add(new Block(300 + Block.WIDTH * i, 100, Block.LEFT));
         }
         head = blocks.get(0);
@@ -133,6 +158,22 @@ public class HardGameView extends SurfaceView implements SurfaceHolder.Callback,
         isRun = false;
     }
 
+    public void setType(int type) {
+        switch (type) {
+            case 1:
+                CURRENT_TYPE = EASY_TYPE;
+                break;
+            case 2:
+                CURRENT_TYPE = MIDDLE_TYPE;
+                break;
+            case 3:
+                CURRENT_TYPE = HARD_TYPE;
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     public void run() {
         while (isRun) {
@@ -143,7 +184,7 @@ public class HardGameView extends SurfaceView implements SurfaceHolder.Callback,
             long diffTime = endTime - startTime;
             if (diffTime < 1000 / 60) {
                 try {
-                    Thread.sleep(1000 / 60 - diffTime);
+                    Thread.sleep(CURRENT_TYPE / 60 - diffTime);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -181,21 +222,33 @@ public class HardGameView extends SurfaceView implements SurfaceHolder.Callback,
             switch (end.getDir()) {
                 case Block.LEFT:
                     blocks.add(new Block(end.getX() + Block.WIDTH, end.getY(), end.getDir()));
+                    adDBScore();
                     break;
 
                 case Block.RIGHT:
                     blocks.add(new Block(end.getX() - Block.WIDTH, end.getY(), end.getDir()));
+                    adDBScore();
                     break;
 
                 case Block.UP:
                     blocks.add(new Block(end.getX(), end.getY() + Block.WIDTH, end.getDir()));
+                    adDBScore();
                     break;
 
                 case Block.DOWN:
                     blocks.add(new Block(end.getX(), end.getY() - Block.WIDTH, end.getDir()));
+                    adDBScore();
+                    break;
+                default:
                     break;
             }
             setFood();
+        }
+    }
+
+    public void adDBScore() {
+        if (mListener != null) {
+            mListener.easyGameViewEatFood();
         }
     }
 
@@ -236,6 +289,9 @@ public class HardGameView extends SurfaceView implements SurfaceHolder.Callback,
             paint.setTextAlign(Paint.Align.CENTER);
             paint.setTextSize(36);
             paint.setColor(Color.BLACK);
+            if (mListener != null) {
+                mListener.gameOver();
+            }
             canvas.drawText("游戏结束，请双击屏幕重新开始", 540, 1054, paint);
         }
         canvas.restore();
@@ -251,5 +307,12 @@ public class HardGameView extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public boolean performClick() {
         return super.performClick();
+    }
+
+    public interface EasyGameViewListener {
+
+        void easyGameViewEatFood();
+
+        void gameOver();
     }
 }

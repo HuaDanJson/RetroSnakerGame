@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.blankj.utilcode.util.Utils;
+import com.example.zhangjinming.androidgame8.utils.DBRankingBeanDaoUtils;
 import com.example.zhangjinming.androidgame8.utils.DBScoreBeanDaoUtils;
 import com.example.zhangjinming.androidgame8.utils.SharePreferenceUtil;
 import com.example.zhangjinming.androidgame8.utils.ToastHelper;
@@ -25,6 +26,7 @@ public class CCApplication extends Application {
         ToastHelper.init(this);
         Utils.init(this);
         DBScoreBeanDaoUtils.Init(this);
+        DBRankingBeanDaoUtils.Init(this);
     }
 
 
