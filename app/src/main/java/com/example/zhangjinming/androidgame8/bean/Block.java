@@ -1,8 +1,10 @@
 package com.example.zhangjinming.androidgame8.bean;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+
+import com.example.zhangjinming.androidgame8.R;
+import com.example.zhangjinming.androidgame8.utils.ResourceUtil;
 
 public class Block {
     private int x;
@@ -14,10 +16,20 @@ public class Block {
     public static final int DOWN = 3;
     public static final int WIDTH = 10;
 
-    public Block(int x, int y, int dir) {
+    private int mColors[] = {ResourceUtil.getColor(R.color.black),
+            ResourceUtil.getColor(R.color.upload_video_add_text_color03),
+            ResourceUtil.getColor(R.color.upload_video_add_text_color04),
+            ResourceUtil.getColor(R.color.upload_video_add_text_color05),
+            ResourceUtil.getColor(R.color.upload_video_add_text_color06),
+            ResourceUtil.getColor(R.color.upload_video_add_text_color07)};
+
+    private int currentColor = mColors[0];
+
+    public Block(int x, int y, int dir, int selectColor) {
         this.x = x;
         this.y = y;
         this.dir = dir;
+        this.currentColor = mColors[selectColor];
     }
 
     public int getX() {
@@ -44,6 +56,15 @@ public class Block {
         this.dir = dir;
     }
 
+    public int getCurrentColor() {
+        return currentColor;
+    }
+
+    //selectColor  取值：1 2 3 4 5
+    public void setCurrentColor(int selectColor) {
+        this.currentColor = mColors[selectColor];
+    }
+
     public void logic() {
         switch (dir) {
             case LEFT:
@@ -61,8 +82,9 @@ public class Block {
         }
     }
 
+
     public void draw(Canvas canvas, Paint paint) {
-        paint.setColor(Color.BLACK);
+        paint.setColor(currentColor);
         canvas.drawRect(x, y, x + WIDTH, y + WIDTH, paint);
     }
 }

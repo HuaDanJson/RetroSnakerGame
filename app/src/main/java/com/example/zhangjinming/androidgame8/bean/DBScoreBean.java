@@ -15,7 +15,7 @@ public class DBScoreBean {
 
     private int score;//自己分数
 
-    private int type;//自己的等级
+    private int type;//购买的商品  值 为：1 2 3 4 5
 
     @Generated(hash = 112911899)
     public DBScoreBean(long userId, int score, int type) {

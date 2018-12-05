@@ -14,7 +14,9 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 
 import com.example.zhangjinming.androidgame8.bean.Block;
+import com.example.zhangjinming.androidgame8.bean.DBScoreBean;
 import com.example.zhangjinming.androidgame8.bean.Food;
+import com.example.zhangjinming.androidgame8.utils.DBScoreBeanDaoUtils;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private int MIDDLE_TYPE = 10000;
     private int HARD_TYPE = 5000;
     private int CURRENT_TYPE = EASY_TYPE;
+    private int mBlockCurrentColor;
+    private DBScoreBean mDBScoreBean;
 
     public void setEasyGameViewListener(EasyGameViewListener listener) {
         this.mListener = listener;
@@ -56,6 +60,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     public void init(Context context) {
+        mDBScoreBean = DBScoreBeanDaoUtils.getInstance().queryOneData(1);
+        if (mDBScoreBean != null) {
+            mBlockCurrentColor = mDBScoreBean.getType();
+        }
         holder = getHolder();
         holder.addCallback(this);
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -122,7 +130,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         blocks.clear();
         //控制初始蛇长度
         for (int i = 0; i < 10; i++) {
-            blocks.add(new Block(300 + Block.WIDTH * i, 100, Block.LEFT));
+            blocks.add(new Block(300 + Block.WIDTH * i, 100, Block.LEFT, mBlockCurrentColor));
         }
         head = blocks.get(0);
         setFood();
@@ -158,7 +166,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         isRun = false;
     }
 
-    public void setType(int type) {
+    public void setType(int type, int blockColor) {
+        mBlockCurrentColor = blockColor;
         switch (type) {
             case 1:
                 CURRENT_TYPE = EASY_TYPE;
@@ -221,22 +230,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             Block end = blocks.get(blocks.size() - 1);
             switch (end.getDir()) {
                 case Block.LEFT:
-                    blocks.add(new Block(end.getX() + Block.WIDTH, end.getY(), end.getDir()));
+                    blocks.add(new Block(end.getX() + Block.WIDTH, end.getY(), end.getDir(), mBlockCurrentColor));
                     adDBScore();
                     break;
 
                 case Block.RIGHT:
-                    blocks.add(new Block(end.getX() - Block.WIDTH, end.getY(), end.getDir()));
+                    blocks.add(new Block(end.getX() - Block.WIDTH, end.getY(), end.getDir(), mBlockCurrentColor));
                     adDBScore();
                     break;
 
                 case Block.UP:
-                    blocks.add(new Block(end.getX(), end.getY() + Block.WIDTH, end.getDir()));
+                    blocks.add(new Block(end.getX(), end.getY() + Block.WIDTH, end.getDir(), mBlockCurrentColor));
                     adDBScore();
                     break;
 
                 case Block.DOWN:
-                    blocks.add(new Block(end.getX(), end.getY() - Block.WIDTH, end.getDir()));
+                    blocks.add(new Block(end.getX(), end.getY() - Block.WIDTH, end.getDir(), mBlockCurrentColor));
                     adDBScore();
                     break;
                 default:

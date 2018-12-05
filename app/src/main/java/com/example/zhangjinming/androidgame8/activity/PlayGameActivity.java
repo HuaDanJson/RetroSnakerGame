@@ -34,13 +34,13 @@ public class PlayGameActivity extends BaseActivity implements GameView.EasyGameV
         ButterKnife.bind(this);
         initType();
         PlayMusicManager.getInstance().playMusic(this, R.raw.background_music);
-        mDBScoreBean = DBScoreBeanDaoUtils.getInstance().queryOneData(1);
     }
 
     public void initType() {
+        mDBScoreBean = DBScoreBeanDaoUtils.getInstance().queryOneData(1);
         mType = getIntent().getIntExtra("TYPE", 0);
         mGameView.setEasyGameViewListener(this);
-        mGameView.setType(mType);
+        mGameView.setType(mType, mDBScoreBean.getType());
         if (mType == 1) {
             mTypeTextView.setText("简单模式");
         } else if (mType == 2) {
