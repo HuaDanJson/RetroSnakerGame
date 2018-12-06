@@ -10,4 +10,24 @@
         <item name="android:windowBackground">@drawable/welcome</item>
     </style>
 
+    <style name="DialogScaleAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_alpha_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_alpha_out</item>
+    </style>
+
+    <style name="TextStyleRobotoBold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextStyleRobotoMedium">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="TextStyleRobotoRegular">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+
 </resources>

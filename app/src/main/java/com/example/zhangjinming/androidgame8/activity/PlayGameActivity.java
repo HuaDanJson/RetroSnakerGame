@@ -8,6 +8,7 @@ import com.example.zhangjinming.androidgame8.R;
 import com.example.zhangjinming.androidgame8.base.BaseActivity;
 import com.example.zhangjinming.androidgame8.bean.DBRankingBean;
 import com.example.zhangjinming.androidgame8.bean.DBScoreBean;
+import com.example.zhangjinming.androidgame8.dialog.LogoutDialog;
 import com.example.zhangjinming.androidgame8.utils.DBRankingBeanDaoUtils;
 import com.example.zhangjinming.androidgame8.utils.DBScoreBeanDaoUtils;
 import com.example.zhangjinming.androidgame8.utils.PlayMusicManager;
@@ -15,7 +16,8 @@ import com.example.zhangjinming.androidgame8.utils.PlayMusicManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PlayGameActivity extends BaseActivity implements GameView.EasyGameViewListener {
+public class PlayGameActivity extends BaseActivity implements GameView.EasyGameViewListener, LogoutDialog.LogoutDialogListener {
+
 
     @BindView(R.id.rl_easy_game_activity)
     @Nullable GameView mGameView;
@@ -26,6 +28,7 @@ public class PlayGameActivity extends BaseActivity implements GameView.EasyGameV
     private DBScoreBean mDBScoreBean;
     private int mScoreCount;
     private int mType;
+    private LogoutDialog mLogoutDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +74,14 @@ public class PlayGameActivity extends BaseActivity implements GameView.EasyGameV
 
     @Override
     public void gameOver() {
-        DBRankingBean dbRankingBean = new DBRankingBean();
-        dbRankingBean.setCurrentTimeAsId(System.currentTimeMillis());
-        dbRankingBean.setScore(mScoreCount);
-        dbRankingBean.setType(mType);
-        DBRankingBeanDaoUtils.getInstance().insertOneData(dbRankingBean);
+        showLogoutDialog();
+        if (mScoreCount > 0) {
+            DBRankingBean dbRankingBean = new DBRankingBean();
+            dbRankingBean.setCurrentTimeAsId(System.currentTimeMillis());
+            dbRankingBean.setScore(mScoreCount);
+            dbRankingBean.setType(mType);
+            DBRankingBeanDaoUtils.getInstance().insertOneData(dbRankingBean);
+        }
         mScoreCount = 0;
         doInUI(new Runnable() {
             @Override
@@ -83,5 +89,36 @@ public class PlayGameActivity extends BaseActivity implements GameView.EasyGameV
                 mScoreTextView.setText("得分：" + String.valueOf(0));
             }
         });
+    }
+
+    @Override
+    public void onLogoutClicked() {
+        PlayGameActivity.this.finish();
+    }
+
+    @Override
+    public void onGoOnGameClicked() {
+        if (mTypeTextView == null) {return;}
+        mTypeTextView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mGameView == null) {return;}
+                mGameView.reStartGame();
+            }
+        }, 1000);
+    }
+
+    public void showLogoutDialog() {
+        if (mLogoutDialog == null) {
+            mLogoutDialog = new LogoutDialog();
+        }
+        mLogoutDialog.setLogoutDialogListener(this);
+        mLogoutDialog.tryShow(getSupportFragmentManager());
+    }
+
+    public void hideLogoutDialog() {
+        if (mLogoutDialog != null) {
+            mLogoutDialog.tryHide();
+        }
     }
 }

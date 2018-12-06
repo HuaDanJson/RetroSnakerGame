@@ -59,6 +59,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         init(context);
     }
 
+    public void reStartGame() {
+        if (gameOver) {
+            init();
+        }
+    }
+
     public void init(Context context) {
         mDBScoreBean = DBScoreBeanDaoUtils.getInstance().queryOneData(1);
         if (mDBScoreBean != null) {
@@ -86,9 +92,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                 new GestureDetector.SimpleOnGestureListener() {
                     @Override
                     public boolean onDoubleTap(MotionEvent e) {
-                        if (gameOver) {
-                            init();
-                        }
+//                        if (gameOver) {
+//                            init();
+//                        }
                         return super.onDoubleTap(e);
                     }
 
@@ -301,7 +307,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             if (mListener != null) {
                 mListener.gameOver();
             }
-            canvas.drawText("游戏结束，请双击屏幕重新开始", 540, 1054, paint);
+//            canvas.drawText("游戏结束，请双击屏幕重新开始", 540, 1054, paint);
         }
         canvas.restore();
     }
