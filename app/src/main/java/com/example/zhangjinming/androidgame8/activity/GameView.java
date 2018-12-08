@@ -39,6 +39,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private int CURRENT_TYPE = EASY_TYPE;
     private int mBlockCurrentColor;
     private DBScoreBean mDBScoreBean;
+    private Thread mThread;
 
     public void setEasyGameViewListener(EasyGameViewListener listener) {
         this.mListener = listener;
@@ -62,6 +63,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     public void reStartGame() {
         if (gameOver) {
             init();
+            isRun = true;
+            mThread = new Thread(this);
+            mThread.start();
         }
     }
 
@@ -158,8 +162,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         isRun = true;
-        new Thread(this).start();
-
+        mThread = new Thread(this);
+        mThread.start();
     }
 
     @Override
@@ -305,6 +309,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             paint.setTextSize(36);
             paint.setColor(Color.BLACK);
             if (mListener != null) {
+                isRun = false;
                 mListener.gameOver();
             }
 //            canvas.drawText("游戏结束，请双击屏幕重新开始", 540, 1054, paint);
